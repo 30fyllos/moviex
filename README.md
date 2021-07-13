@@ -31,7 +31,12 @@ sail up -d
 
 ## 3. Install moviex package (part 1)
 
-Extract all files on the root folder of your laravel application
+Create the folders 'packages\go4tech\moviex' in the root folder of Laravel app and extract all files in it.
+For linux use:
+
+```
+mkdir packages && cd packages && mkdir go4tech && cd go4tech && mkdir moviex && cd moviex
+```
 
 Example installation path:
 e.g. example-app\packages\go4tech\moviex\*
