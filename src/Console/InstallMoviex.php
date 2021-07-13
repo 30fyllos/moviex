@@ -34,17 +34,10 @@ class InstallMoviex extends Command
         $this->info('Installing Tailwind css...');
         $this->tailwindInstall();
         exec('npm run dev');
-
+        exec('php artisan migrate');
         (new StoreApi)->initialize();
 
         $this->info('Installation completed!');
-    }
-
-    private function databaseInit()
-    {
-      if ($this->dialogueConfirm('Config file already exists. Do you want to overwrite it')) {
-        (new StoreApi)->initialize();
-      }
     }
 
     private function tailwindInstall()
