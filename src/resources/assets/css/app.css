@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.title-base {
+    @apply mb-6 relative capitalize text-4xl font-semibold text-gray-50;
+}
+.title-base:before {
+    content: "";
+    top: -1rem;
+    @apply absolute left-1/2 transform -translate-x-1/2 h-1 w-36 bg-primary;
+}
+.flip-card {
+    @apply relative block w-full bg-transparent;
+    perspective: 1000px;
+}
+.flip-card-inner {
+    @apply relative block h-35r lg:h-44r;
+    transition: 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform-style: preserve-3d;
+}
+.flip-card-inner:before {
+    @apply absolute w-40 h-40 bg-primary -z-1;
+    top: -0.5rem;
+    right: -0.5rem;
+    content: "";
+}
+.flip-card-inner:after {
+    @apply absolute w-40 h-40 bg-gray-500 -z-1;
+    bottom: -0.5rem;
+    left: -0.5rem;
+    content: "";
+}
+.flip-card-inner-3d-front {
+    @apply absolute inset-0 w-full h-full z-10;
+    transition: 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform-style: preserve-3d;
+    transform: scale(0.9);
+}
+.flip-card-inner-3d-back {
+    @apply absolute inset-0 origin-center;
+    transition: 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform-style: preserve-3d;
+    transform: translateX(-150px) scale(1.2);
+}
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+.flip-card:hover .flip-card-inner-3d-front {
+    transform: translateX(150px) scale(1.2);
+}
+.flip-card:hover .flip-card-inner-3d-back {
+    transform: translateX(0px) scale(0.9);
+}
+.flip-card-front,
+.flip-card-back {
+    @apply absolute w-full h-full overflow-hidden;
+    backface-visibility: hidden;
+}
+.flip-card-front {
+    @apply bg-gray-800 text-red-700;
+}
+.flip-card-front:before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-t from-gray-900 bg-opacity-90 z-10;
+}
+.flip-card-back {
+    @apply border-2 bg-gray-900 border-gray-700;
+    transform: rotateY(180deg);
+}
+.front-title {
+    @apply absolute bottom-5 left-2 text-4xl font-bold uppercase text-gray-50;
+}
+.front-title:after {
+    content: "";
+    top: -1rem;
+    @apply absolute left-0 h-1 w-24 bg-primary;
+}

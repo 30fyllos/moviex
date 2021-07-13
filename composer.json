@@ -1,0 +1,29 @@
+{
+    "name": "go4tech/moviex",
+    "description": "The app of whole time the best movies.",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Go4tech\\Moviex\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "George Triantafyllos",
+            "email": "gt30fyllos@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Go4tech\\Moviex\\MoviesServiceProvider"
+            ],
+            "aliases": {
+                "Moviex": "Go4tech\\Moviex\\Facade"
+            }
+        }
+    }
+}
