@@ -31,7 +31,13 @@ jobs:
             git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.md$' || echo "no-md-files"
           elif [[ "${{ github.event_name }}" == "push" ]]; then
             echo "Checking for changes in the latest push."
-            git diff --name-only HEAD^ HEAD | grep '\.md$' || echo "no-md-files"
+            # Check if HEAD^ exists, otherwise use HEAD for the diff
+            if git rev-parse HEAD^ >/dev/null 2>&1; then
+              git diff --name-only HEAD^ HEAD | grep '\.md$' || echo "no-md-files"
+            else
+              echo "First commit detected, checking only HEAD."
+              git diff --name-only HEAD | grep '\.md$' || echo "no-md-files"
+            fi
           fi
 
       - name: Trigger build action if markdown are changed
