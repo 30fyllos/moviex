@@ -32,6 +32,9 @@ jobs:
             git diff --name-only HEAD | grep '\.md$' || echo "result=no-md-files" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: test
+        run: echo ${{ steps.check_md_files.outputs.result }}
+
       - name: Trigger build action if markdown are changed
         if: steps.check_md_files.outputs.result != 'no-md-files'
         run: |
