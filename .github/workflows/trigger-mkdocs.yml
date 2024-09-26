@@ -4,16 +4,10 @@ on:
   push:
     branches:
       - main
-#  pull_request:
-#    branches:
-#      - main
-#    types:
-#      - closed
 
 jobs:
   trigger:
     runs-on: ubuntu-latest
-#    if: github.event.pull_request.merged == true
     if: github.event_name == 'push'
 
     outputs:
@@ -30,8 +24,6 @@ jobs:
       - name: Check for changed markdown files
         id: check_md_files
         run: |
-#          echo "Checking for changes between base and head of pull request."
-#          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.md$' || echo "no-md-files"
           echo "Checking for changes in the latest push."
           if git rev-parse HEAD^ >/dev/null 2>&1; then
             git diff --name-only HEAD^ HEAD | grep '\.md$' || echo "test=no-md-files" >> "$GITHUB_OUTPUT"
