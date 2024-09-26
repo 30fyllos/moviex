@@ -1,16 +1,33 @@
-name: Trigger Repo Build
+name: Detect markdown file changes and trigger build action
 
 on:
   push:
     branches:
-      - main  # You can modify the branch as needed
+      - main
+  pull_request:
+    types:
+      - closed
 
 jobs:
   trigger:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true || github.event_name == 'push'
 
     steps:
-      - name: Trigger repo build action
+      - uses: actions/checkout@v4
+
+      - name: Check for changed markdown files
+        id: check_md_files
+        run: |
+          # For pull request merges, check the diff of the base and head commit
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.md$' || echo "no-md-files"
+          else
+            # For regular pushes, check the previous commit and the latest commit
+            git diff --name-only HEAD^ HEAD | grep '\.md$' || echo "no-md-files"
+
+      - name: Trigger build action if markdown are changed
+        if: steps.check_md_files.outputs.files != 'no-md-files'
         run: |
           curl -X POST \
           -H "Authorization: token ${{ secrets.PAT }}" \
