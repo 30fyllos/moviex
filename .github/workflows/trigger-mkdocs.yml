@@ -26,17 +26,17 @@ jobs:
         run: |
           echo "Checking for changes in the latest push."
           if git rev-parse HEAD^ >/dev/null 2>&1; then
-            git diff --name-only HEAD^ HEAD | grep '\.md$' || echo "result=md-changed" >> "$GITHUB_OUTPUT"
+            git diff --name-only HEAD^ HEAD | grep '\.md$' || echo "no-md-files" >> "$GITHUB_OUTPUT"
           else
             echo "First commit detected, checking only HEAD."
-            git diff --name-only HEAD | grep '\.md$' || echo "result=md-changed" >> "$GITHUB_OUTPUT"
+            git diff --name-only HEAD | grep '\.md$' || echo "no-md-files" >> "$GITHUB_OUTPUT"
           fi
 
       - name: test
         run: echo ${{ steps.check_md_files.outputs.result }}
 
       - name: Trigger build action if markdown are changed
-        if: steps.check_md_files.outputs.result == 'md-changed'
+        if: steps.check_md_files.outputs.result != 'no-md-files'
         run: |
           curl -X POST \
           -H "Authorization: token ${{ secrets.PAT }}" \
