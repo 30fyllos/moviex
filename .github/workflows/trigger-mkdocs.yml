@@ -1,16 +1,23 @@
 name: Detect markdown file changes and trigger build action
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types:
-      - closed
+#  pull_request:
+#    branches:
+#      - main
+#    types:
+#      - closed
 
 jobs:
   trigger:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+#    if: github.event.pull_request.merged == true
+    if: github.event_name == 'push'
+
+    outputs:
+      md-mutation: ${{ steps.check_md_files.outputs.test }}
 
     steps:
       - uses: actions/checkout@v4
@@ -23,11 +30,18 @@ jobs:
       - name: Check for changed markdown files
         id: check_md_files
         run: |
-          echo "Checking for changes between base and head of pull request."
-          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.md$' || echo "no-md-files"
+#          echo "Checking for changes between base and head of pull request."
+#          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.md$' || echo "no-md-files"
+          echo "Checking for changes in the latest push."
+          if git rev-parse HEAD^ >/dev/null 2>&1; then
+            git diff --name-only HEAD^ HEAD | grep '\.md$' || echo "test=no-md-files" >> "$GITHUB_OUTPUT"
+          else
+            echo "First commit detected, checking only HEAD."
+            git diff --name-only HEAD | grep '\.md$' || echo "test=no-md-files" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Trigger build action if markdown are changed
-        if: steps.check_md_files.outputs != 'no-md-files'
+        if: steps.check_md_files.outputs.test != 'no-md-files'
         run: |
           echo ${{steps.check_md_files.outputs}}
           curl -X POST \
