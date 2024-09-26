@@ -16,15 +16,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up git
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Check for changed markdown files
         id: check_md_files
         run: |
-          # For pull request merges, check the diff of the base and head commit
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+         if [[ "${{ github.event_name }}" == "pull_request" && "${{ github.event.pull_request.merged }}" == "true" ]]; then
+            echo "Checking for changes between base and head of pull request."
             git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.md$' || echo "no-md-files"
-          else
-            # For regular pushes, check the previous commit and the latest commit
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "Checking for changes in the latest push."
             git diff --name-only HEAD^ HEAD | grep '\.md$' || echo "no-md-files"
+          fi
 
       - name: Trigger build action if markdown are changed
         if: steps.check_md_files.outputs.files != 'no-md-files'
