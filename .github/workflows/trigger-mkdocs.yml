@@ -27,10 +27,7 @@ jobs:
         id: check_md_files
         run: |
           echo "Checking for changes in the latest push."
-          # echo "result=no-md-files-changes" >> "$GITHUB_OUTPUT"
-          # if git diff --name-only @~ | grep '\.md$'; then
-          #   echo "result=md-files-changed" >> "$GITHUB_OUTPUT"
-          # fi
+          echo "result=no-md-files-changes" >> "$GITHUB_OUTPUT"
           if git rev-parse HEAD^ >/dev/null 2>&1; then
             echo "Check for changes between the last two commits."
             if git diff --name-only HEAD^ HEAD | grep '\.md$'; then
