@@ -42,3 +42,4 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/30fyllos/multi-repo-md/dispatches \
           -d '{"event_type": "trigger-build"}'
+          echo "Event dispatched successfully."
