@@ -13,7 +13,7 @@ jobs:
     if: github.event.pull_request.merged == true
 
     outputs:
-      md-mutation: ${{ steps.check_md_files.outputs.result }}
+      mutation: ${{ steps.check_md_files.outputs.result }}
 
     steps:
       - uses: actions/checkout@v4
@@ -27,10 +27,10 @@ jobs:
         id: check_md_files
         run: |
           echo "Checking for changes between base and head of pull request."
-          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.md$' || echo "result=no-md-files" >> "$GITHUB_OUTPUT"
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.md$' || echo "result=md-changed" >> "$GITHUB_OUTPUT"
 
       - name: Trigger build action if markdown are changed
-        if: steps.check_md_files.outputs.result != 'no-md-files'
+        if: steps.check_md_files.outputs.result == 'md-changed'
         run: |
           curl -X POST \
           -H "Authorization: token ${{ secrets.PAT }}" \
